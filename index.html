@@ -19,7 +19,7 @@
       --thumb-q: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256'><defs><radialGradient id='g' cx='50%25' cy='35%25' r='70%25'><stop offset='0%25' stop-color='%23ffffff'/><stop offset='100%25' stop-color='%23eaeaea'/></radialGradient></defs><circle cx='128' cy='128' r='118' fill='url(%23g)'/><circle cx='128' cy='128' r='118' fill='none' stroke='%23000000' stroke-opacity='0.08' stroke-width='10'/><text x='128' y='162' text-anchor='middle' font-family='system-ui,Segoe UI,Arial' font-size='150' font-weight='900' fill='%23120a1b'>?</text></svg>");
     }
 
-   <audio id="mooSound" src="kek_moo.mp3" preload="auto"></audio>
+
     
     *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
     html,body{ height:100%; margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
@@ -226,6 +226,8 @@
   </style>
 </head>
 
+  <audio id="mooSound" src="kek_moo.mp3" preload="auto"></audio>
+  
 <body>
   <main class="app" aria-label="Ko eller kviga">
     <section class="logoHero" aria-label="Logotyp">
@@ -291,12 +293,6 @@
     window.addEventListener("touchstart", unlockAudio, true);
     window.addEventListener("click", unlockAudio, true);
 
-    function playMuuu() {
-      const a = document.getElementById("mooSound");
-      if (!a) return;
-      a.currentTime = 0;
-      a.play().catch(()=>{ /* mobil kan blocka första gången */ });
-    }
 
 
     const slider    = document.getElementById("slider");
@@ -314,6 +310,14 @@
 
     const THRESHOLD = 55;
 
+    function playMuuu() {
+      const a = document.getElementById("mooSound");
+      if (!a) return;
+      a.currentTime = 0;
+      a.play().catch(()=>{ /* mobil kan blocka första gången */ });
+    }
+
+    
     function setSelected(which){
       btnKo.classList.toggle("selected", which === "ko");
       btnKviga.classList.toggle("selected", which === "kviga");
@@ -384,6 +388,7 @@
   </script>
 </body>
 </html>
+
 
 
 
