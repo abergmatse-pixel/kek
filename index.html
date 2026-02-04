@@ -258,6 +258,37 @@
 
   <script>
     // === Muu-ljud (Web Audio, ingen fil behövs) ===
+
+        function unlockAudio() {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+    
+      // skapa / återanvänd samma context som playMuuu använder
+      const ctx = playMuuu._ctx || (playMuuu._ctx = new AudioCtx());
+    
+      // resume om den är pausad
+      if (ctx.state === "suspended") ctx.resume();
+    
+      // spela ett superkort "tyst" ljud för att låsa upp på iOS
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      gain.gain.value = 0.00001; // i princip tyst
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.02);
+    
+      // ta bort listeners när det är upplåst
+      window.removeEventListener("pointerdown", unlockAudio, true);
+      window.removeEventListener("touchstart", unlockAudio, true);
+      window.removeEventListener("click", unlockAudio, true);
+    }
+    
+    // kör unlock på första interaktion
+    window.addEventListener("pointerdown", unlockAudio, true);
+    window.addEventListener("touchstart", unlockAudio, true);
+    window.addEventListener("click", unlockAudio, true);
+
     function playMuuu() {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtx) return;
@@ -388,5 +419,6 @@
   </script>
 </body>
 </html>
+
 
 
