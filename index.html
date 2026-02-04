@@ -289,93 +289,49 @@
     window.addEventListener("touchstart", unlockAudio, true);
     window.addEventListener("click", unlockAudio, true);
 
-    function playMuuuCowLike() {
+    function playMuuu() {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtx) return;
-    
-      const ctx = playMuuuCowLike._ctx || (playMuuuCowLike._ctx = new AudioCtx());
+
+      const ctx = playMuuu._ctx || (playMuuu._ctx = new AudioCtx());
       if (ctx.state === "suspended") ctx.resume();
-    
-      const t0 = ctx.currentTime;
-    
-      // Källa: rik men mjuk
-      const src = ctx.createOscillator();
-      src.type = "triangle"; // mjukare än saw
-    
-      // Lite “luft”/brus för realism (svagt)
-      const noise = ctx.createBufferSource();
-      const nbuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.9), ctx.sampleRate);
-      const data = nbuf.getChannelData(0);
-      for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.25;
-      noise.buffer = nbuf;
-      noise.loop = false;
-    
-      // Pitch: börja lite högre och glid ned (muuu)
-      src.frequency.setValueAtTime(120, t0);
-      src.frequency.exponentialRampToValueAtTime(86, t0 + 0.28);
-      src.frequency.exponentialRampToValueAtTime(78, t0 + 0.75);
-    
-      // Vibrato (långsamt)
+
+      const now = ctx.currentTime;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(115, now);
+      osc.frequency.exponentialRampToValueAtTime(92, now + 0.22);
+
       const lfo = ctx.createOscillator();
       const lfoGain = ctx.createGain();
       lfo.type = "sine";
-      lfo.frequency.setValueAtTime(4.6, t0);
-      lfoGain.gain.setValueAtTime(5.5, t0); // Hz
+      lfo.frequency.setValueAtTime(5.5, now);
+      lfoGain.gain.setValueAtTime(6, now);
       lfo.connect(lfoGain);
-      lfoGain.connect(src.frequency);
-    
-      // FORMANTER: två bandpass som formar “uuu”
-      const f1 = ctx.createBiquadFilter();
-      f1.type = "bandpass";
-      f1.frequency.setValueAtTime(330, t0); // “u”-likt
-      f1.Q.setValueAtTime(7.5, t0);
-    
-      const f2 = ctx.createBiquadFilter();
-      f2.type = "bandpass";
-      f2.frequency.setValueAtTime(870, t0);
-      f2.Q.setValueAtTime(8.5, t0);
-    
-      // Mixa formanter
-      const mix = ctx.createGain();
-      mix.gain.setValueAtTime(1.0, t0);
-    
-      // Noise färgas och blandas in lite
-      const nFilter = ctx.createBiquadFilter();
-      nFilter.type = "lowpass";
-      nFilter.frequency.setValueAtTime(1200, t0);
-      const nGain = ctx.createGain();
-      nGain.gain.setValueAtTime(0.03, t0); // väldigt låg nivå
-    
-      // Slutvolym-envelope
-      const amp = ctx.createGain();
-      amp.gain.setValueAtTime(0.0001, t0);
-      amp.gain.exponentialRampToValueAtTime(0.45, t0 + 0.05); // attack
-      amp.gain.exponentialRampToValueAtTime(0.28, t0 + 0.18); // settle
-      amp.gain.setValueAtTime(0.28, t0 + 0.55);              // sustain
-      amp.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.90); // release
-    
-      // Koppla: src -> f1 -> f2 -> mix -> amp -> out
-      src.connect(f1);
-      f1.connect(f2);
-      f2.connect(mix);
-    
-      // Brus -> filter -> gain -> mix
-      noise.connect(nFilter);
-      nFilter.connect(nGain);
-      nGain.connect(mix);
-    
-      mix.connect(amp);
-      amp.connect(ctx.destination);
-    
-      // Start/stop
-      lfo.start(t0);
-      src.start(t0);
-      noise.start(t0);
-    
-      const tEnd = t0 + 0.92;
-      src.stop(tEnd);
-      noise.stop(tEnd);
-      lfo.stop(tEnd);
+      lfoGain.connect(osc.frequency);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.35, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.18, now + 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(650, now);
+      filter.Q.setValueAtTime(0.8, now);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+
+      lfo.start(now);
+      osc.start(now);
+
+      osc.stop(now + 0.5);
+      lfo.stop(now + 0.5);
     }
 
 
@@ -464,6 +420,7 @@
   </script>
 </body>
 </html>
+
 
 
 
