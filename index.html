@@ -19,6 +19,8 @@
       --thumb-q: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256' viewBox='0 0 256 256'><defs><radialGradient id='g' cx='50%25' cy='35%25' r='70%25'><stop offset='0%25' stop-color='%23ffffff'/><stop offset='100%25' stop-color='%23eaeaea'/></radialGradient></defs><circle cx='128' cy='128' r='118' fill='url(%23g)'/><circle cx='128' cy='128' r='118' fill='none' stroke='%23000000' stroke-opacity='0.08' stroke-width='10'/><text x='128' y='162' text-anchor='middle' font-family='system-ui,Segoe UI,Arial' font-size='150' font-weight='900' fill='%23120a1b'>?</text></svg>");
     }
 
+   <audio id="mooSound" src="kek_moo.mp3" preload="auto"></audio>
+    
     *{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
     html,body{ height:100%; margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; }
     body{
@@ -290,48 +292,10 @@
     window.addEventListener("click", unlockAudio, true);
 
     function playMuuu() {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-
-      const ctx = playMuuu._ctx || (playMuuu._ctx = new AudioCtx());
-      if (ctx.state === "suspended") ctx.resume();
-
-      const now = ctx.currentTime;
-
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.type = "sawtooth";
-      osc.frequency.setValueAtTime(115, now);
-      osc.frequency.exponentialRampToValueAtTime(92, now + 0.22);
-
-      const lfo = ctx.createOscillator();
-      const lfoGain = ctx.createGain();
-      lfo.type = "sine";
-      lfo.frequency.setValueAtTime(5.5, now);
-      lfoGain.gain.setValueAtTime(6, now);
-      lfo.connect(lfoGain);
-      lfoGain.connect(osc.frequency);
-
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(0.35, now + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.18, now + 0.12);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
-
-      const filter = ctx.createBiquadFilter();
-      filter.type = "lowpass";
-      filter.frequency.setValueAtTime(650, now);
-      filter.Q.setValueAtTime(0.8, now);
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(ctx.destination);
-
-      lfo.start(now);
-      osc.start(now);
-
-      osc.stop(now + 0.5);
-      lfo.stop(now + 0.5);
+      const a = document.getElementById("mooSound");
+      if (!a) return;
+      a.currentTime = 0;
+      a.play().catch(()=>{ /* mobil kan blocka första gången */ });
     }
 
 
@@ -420,6 +384,7 @@
   </script>
 </body>
 </html>
+
 
 
 
