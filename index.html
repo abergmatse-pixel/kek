@@ -66,6 +66,23 @@
       -webkit-backdrop-filter: blur(10px);
     }
 
+    .logoHero{
+      /* ingen ram, ingen “card” */
+      padding: 0;
+      margin-top: 2px;
+    }
+    
+    .logoImg{
+      width: 100%;
+      height: auto;
+      display: block;
+    
+      /* gör den visuellt “så stor som möjligt” */
+      max-height: 42vh;            /* justera 38–50vh om du vill */
+      object-fit: contain;
+    }
+
+    
     .logoWrap{ padding: 14px; }
     .logo{
       width:100%;
@@ -205,8 +222,8 @@
 
 <body>
   <main class="app" aria-label="Ko eller kviga">
-    <section class="card logoWrap" aria-label="Logotyp">
-      <img class="logo" src="kek_logga.png" alt="Ko eller kviga? logotyp" />
+    <section class="logoHero" aria-label="Logotyp">
+      <img class="logoImg" src="kek_logga.png" alt="Ko eller kviga? logotyp" />
     </section>
 
     <section class="card picker" aria-label="Välj ko eller kviga">
@@ -367,3 +384,4 @@
   </script>
 </body>
 </html>
+
